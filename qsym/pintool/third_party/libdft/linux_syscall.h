@@ -20,7 +20,7 @@
 #include <linux/version.h>
 
 #include <signal.h>
-#include <ustat.h>
+// #include <ustat.h>
 
 #if LINUX_VERSION_CODE == KERNEL_VERSION(2,6,31)
 #include <linux/perf_counter.h>

@@ -25,6 +25,20 @@
 #include "linux_syscall.h"
 
 namespace qsym {
+
+  // Use pre-computed size of struct ustat to avoid <sys/ustat.h> which
+  // has been removed from glibc 2.28.
+#if defined(__aarch64__) || defined(__s390x__) || defined (__mips64) \
+  || defined(__powerpc64__) || defined(__arch64__) || defined(__sparcv9) \
+  || defined(__x86_64__)
+#define SIZEOF_STRUCT_USTAT 32
+#elif defined(__arm__) || defined(__i386__) || defined(__mips__) \
+  || defined(__powerpc__) || defined(__s390__)
+#define SIZEOF_STRUCT_USTAT 20
+#else
+#error Unknown size of struct ustat
+#endif
+
 // shared memory segments (address -> size)
 std::map<ADDRINT, USIZE> kSharedMemoryMap;
 extern Memory g_memory;
@@ -130,7 +144,7 @@ initializeSyscallDesc() {
   kSyscallDesc[__NR_setpgid] = SyscallDesc{2, 0, 0, {0, 0, 0, 0, 0, 0}, NULL, NULL};
   kSyscallDesc[__NR_umask] = SyscallDesc{1, 0, 0, {0, 0, 0, 0, 0, 0}, NULL, NULL};
   kSyscallDesc[__NR_chroot] = SyscallDesc{1, 0, 0, {0, 0, 0, 0, 0, 0}, NULL, NULL};
-  kSyscallDesc[__NR_ustat] = SyscallDesc{2, 0, 1, {0, sizeof(struct ustat), 0, 0, 0, 0}, NULL, NULL};
+  kSyscallDesc[__NR_ustat] = SyscallDesc{2, 0, 1, {0, SIZEOF_STRUCT_USTAT, 0, 0, 0, 0}, NULL, NULL};
   kSyscallDesc[__NR_dup2] = SyscallDesc{2, 0, 0, {0, 0, 0, 0, 0, 0}, NULL, NULL};
   kSyscallDesc[__NR_getppid] = SyscallDesc{0, 0, 0, {0, 0, 0, 0, 0, 0}, NULL, NULL};
   kSyscallDesc[__NR_getpgrp] = SyscallDesc{0, 0, 0, {0, 0, 0, 0, 0, 0}, NULL, NULL};

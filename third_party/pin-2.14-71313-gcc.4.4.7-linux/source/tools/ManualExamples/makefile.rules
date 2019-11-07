@@ -64,6 +64,7 @@ endif
 # Linux
 ifeq ($(TARGET_OS),linux)
     TEST_TOOL_ROOTS += buffer_linux fork_jit_tool follow_child_tool strace emudiv
+    TOOL_CXXFLAGS += -D_GLIBCXX_USE_CXX11_ABI=0 -Iddk-inc
     TEST_ROOTS += statica
     SA_TOOL_ROOTS += statica
     APP_ROOTS += fork_app follow_child_app1 follow_child_app2 divide_by_zero
